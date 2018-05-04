@@ -322,6 +322,15 @@ public class Player {
 	 * null} si aucune carte n'a été prise dans la réserve.
 	 */
 	public Card gain(String cardName) {
+		
+		if (this.game.getFromSupply(cardName)!=null) {
+			Card c=this.game.removeFromSupply(cardName);
+			this.discard.add(c);
+			return c;
+		}
+		else {
+			return null;
+		}
 	}
 	
 	/**
@@ -339,6 +348,7 @@ public class Player {
 	 * lieu
 	 */
 	public Card buyCard(String cardName) {
+		
 	}
 	
 	/**

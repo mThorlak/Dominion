@@ -182,7 +182,16 @@ public class Game {
 	 * non-vide de la réserve (cartes royaume et cartes communes)
 	 */
 	public CardList availableSupplyCards() {
-	
+		CardList availableCards=new CardList();
+		for(CardList cl : this.supplyStacks) {
+			if(!cl.isEmpty()) {	
+				Card c=cl.get(0);
+				if ((c instanceof TreasureCard) ||(c instanceof VictoryCard) || (c instanceof CurseCard )) {
+					availableCards.add(cl.get(0));
+				}
+			}
+		}
+		return availableCards;
 	
 	}
 	
@@ -221,6 +230,12 @@ public class Game {
 	 * ne correspond
 	 */
 	public Card getFromSupply(String cardName) {
+		for (CardList cl : this.supplyStacks) {
+			if(cl.get(0).getName()==cardName) {
+				return cl.get(0);
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -231,6 +246,14 @@ public class Game {
 	 * ne correspond au nom passé en argument
 	 */
 	public Card removeFromSupply(String cardName) {
+		for (CardList cl : this.supplyStacks) {
+			if(cl.get(0).getName()==cardName) {
+				Card c=cl.get(0);
+				cl.remove(0);
+				return c;
+			}
+		}
+		return null;
 	}
 	
 	/**
