@@ -48,9 +48,14 @@ public class Game {
 	public Game(String[] playerNames, List<CardList> kingdomStacks) {
 		
 		this.initStocks(playerNames, kingdomStacks);
+		this.initPlayers(playerNames, kingdomStacks);
 		
 	}
 	
+	/**
+	 * * @param voir Constructeur de Game
+	 * Sous méthode du constructeur, initialisant les listes de cartes
+	 */
 	private void initStocks(String[] playerNames, List<CardList> kingdomStacks) {
 		//Création des piles individuelles
 		
@@ -94,7 +99,11 @@ public class Game {
 				this.supplyStacks.add(stockProvince);
 		
 	}
-	
+
+	/**
+	 * Sous méthode du constructeur, initialisant les instances Player
+	 * @param voir Constructeur de Game
+	 */
 	private void initPlayers(String[] playerNames, List<CardList> kingdomStacks) {
 		
 		for (int i=0;i<playerNames.length;i++) {
@@ -148,6 +157,21 @@ public class Game {
 	 * premier).
 	 */
 	public List<Player> otherPlayers(Player p) {
+		List players =new ArrayList<Player>();
+		int nbplayer=this.players.length,i=0,idPlayer_p=0;
+		while(i<nbplayer&&this.players[i]!=p) {
+			i++;
+		}
+		idPlayer_p=i;
+		while(i<(nbplayer+idPlayer_p)) {
+			i++;
+			if(this.players[i]!=p) {
+				players.add(this.players[i%nbplayer]);
+			}
+						
+		}
+		
+		return players;
 	}
 	
 	/**
@@ -158,6 +182,8 @@ public class Game {
 	 * non-vide de la réserve (cartes royaume et cartes communes)
 	 */
 	public CardList availableSupplyCards() {
+	
+	
 	}
 	
 	/**

@@ -161,7 +161,9 @@ public class Player {
 		int victPts=0;
 		CardList total=this.totalCards();
 		for(Card card : this.draw) {
-			card.victoryValue(this);
+			victPts+=card.victoryValue(this);
+			}
+		return victPts;
 		}
 		
 	
@@ -177,6 +179,7 @@ public class Player {
 	 * de la classe {@code Game}.
 	 */
 	public List<Player> otherPlayers() {
+		return this.game.otherPlayers(this);
 	}
 	
 	/**
@@ -190,6 +193,18 @@ public class Player {
 	 * @return la carte piochée, {@code null} si aucune carte disponible
 	 */
 	public Card drawCard() {
+		if(this.draw.isEmpty()) {
+			this.discard.shuffle();
+			this.discard.transferTo(this.draw);
+		}
+		if(!this.draw.isEmpty()) {
+			Card c=this.draw.get(0);
+			this.draw.remove(0);
+			return c;
+		}
+		else {
+			return null;
+		}
 	}
 	
 	/**
@@ -215,18 +230,39 @@ public class Player {
 	 * Renvoie la liste de toutes les cartes Trésor dans la main du joueur
 	 */
 	public CardList getTreasureCards() {
+		CardList treasureCardList=new CardList();
+		for(Card c : this.hand) {
+			if (c instanceof TreasureCard) {
+				treasureCardList.add(c);
+			}			
+		}
+		return treasureCardList;
 	}
 	
 	/**
 	 * Renvoie la liste de toutes les cartes Action dans la main du joueur
 	 */
 	public CardList getActionCards() {
+		CardList actionCardList=new CardList();
+		for(Card c : this.hand) {
+			if (c instanceof ActionCard) {
+				actionCardList.add(c);
+			}			
+		}
+		return actionCardList;
 	}
 	
 	/**
 	 * Renvoie la liste de toutes les cartes Victoire dans la main du joueur
 	 */
 	public CardList getVictoryCards() {
+		CardList victoryCardList=new CardList();
+		for(Card c : this.hand) {
+			if (c instanceof VictoryCard) {
+				victoryCardList.add(c);
+			}			
+		}
+		return victoryCardList;
 	}
 	
 	/**
@@ -240,6 +276,8 @@ public class Player {
 	 * {@code inPlay} et exécute la méthode {@code play(Player p)} de la carte.
 	 */
 	public void playCard(Card c) {
+		this.hand.remove(c);
+		c.play(this);
 	}
 	
 	/**
@@ -253,6 +291,10 @@ public class Player {
 	 * fait rien.
 	 */
 	public void playCard(String cardName) {
+		Card c=hand.getCard(cardName);
+		if(c!=null) {
+			this.playCard(c);
+		}
 	}
 	
 	/**
@@ -265,6 +307,9 @@ public class Player {
 	 * emplacement précédent au préalable.
 	 */
 	public void gain(Card c) {
+		if(c!=null) {
+			this.discard.add(c);
+		}
 	}
 	
 	/**

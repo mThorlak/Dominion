@@ -78,4 +78,27 @@ public class CardList extends ArrayList<Card> {
 		}
 		return r.substring(0, r.length() - 2);
 	}
+	/**
+	 * Transfére toutes les cartes de cette instance vers la CardList cible
+	 * @param cl Liste de carte cible (où les cartes seront transférés)
+	 */
+	public void transferTo(CardList cl) {
+		for(Card c : this) {
+			this.remove(c);
+			cl.add(c);
+		}
+	}
+	/**
+	 * Transfére la carte c de cette instance vers la CardList cible
+	 * @param cl Liste de carte cible (où les cartes seront transférés)
+	 */
+	public void transferTo(Card c,CardList cl) {
+		if (this.contains(c)) {
+			this.remove(c);
+			cl.add(c);
+		}
+		else {
+			System.err.println("transferTo(card c,CardList cl) : carte non-présente");
+		}
+	}
 }
