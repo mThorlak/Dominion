@@ -268,6 +268,22 @@ public class Game {
 	 * c'est que la partie est terminée)
 	 */
 	public boolean isFinished() {
+		int supplyEmpty=0;
+		int provinceEmpty=1;
+		for(CardList cl : this.supplyStacks) {
+			if(cl.isEmpty()) {
+				supplyEmpty++;
+			}
+			else if((cl.get(0) instanceof Province)) {
+				provinceEmpty=0;
+			}
+		}
+		if (supplyEmpty>=3 || provinceEmpty==1) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	
 	/**

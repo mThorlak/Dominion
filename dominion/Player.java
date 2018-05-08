@@ -104,6 +104,8 @@ public class Player {
 	 * souhaite diminuer le nombre d'actions)
 	 */
 	public void incrementActions(int n) {
+		this.actions+=n;
+		if(this.actions<0) this.actions=0;
 	}
 	
 	/**
@@ -124,6 +126,8 @@ public class Player {
 	 * souhaite diminuer le nombre d'achats)
 	 */
 	public void incrementBuys(int n) {
+		this.buys+=n;
+		if(this.buys<0) this.buys=0;
 	}
 
 	/**
@@ -226,6 +230,8 @@ public class Player {
 		return r;
 	}
 	
+	
+	
 	/**
 	 * Renvoie la liste de toutes les cartes Trésor dans la main du joueur
 	 */
@@ -325,7 +331,7 @@ public class Player {
 		
 		if (this.game.getFromSupply(cardName)!=null) {
 			Card c=this.game.removeFromSupply(cardName);
-			this.discard.add(c);
+			this.gain(c);
 			return c;
 		}
 		else {
@@ -348,6 +354,15 @@ public class Player {
 	 * lieu
 	 */
 	public Card buyCard(String cardName) {
+		Card c=this.game.getFromSupply(cardName);
+		if (c!=null) {
+			if(this.money>=c.getCost()&&this.buys>=1) {
+				this.incrementMoney(-c.getCost());
+				this.incrementBuys(-1);
+				return this.gain(cardName);				
+			}
+		}
+		return null;
 		
 	}
 	
@@ -473,6 +488,8 @@ public class Player {
 	 * Les compteurs d'actions et achats sont mis à 1
 	 */
 	public void startTurn() {
+		this.incrementActions(1);
+		this.incrementBuys(1);
 	}
 	
 	/**
@@ -483,7 +500,17 @@ public class Player {
 	 * - Le joueur pioche 5 cartes en main
 	 */
 	public void endTurn() {
+		this.buys=0;
+		this.actions=0;
+		
+		this.hand.transferTo(this.discard);
+		this.inPlay.transferTo(this.discard);
+		while(this.hand.size()<5) {
+			this.drawCard();
+		}
 	}
+	
+	
 	
 	/**
 	 * Exécute le tour d'un joueur
@@ -513,5 +540,59 @@ public class Player {
 	 * du joueur
 	 */
 	public void playTurn() {
+		this.startTurn();
+		
+		while(this.actions>0) {
+			
+		}
+		boolean treasureInHand=true;
+		
+		for(Card c : this.cardsInHand()) {
+			if (c instanceof ActionCard) {
+				treasureInHand=true;
+			}
+		}
+		
+		while(treasureInHand) {			
+			treasureInHand=false;
+			for(Card c : this.cardsInHand()) {
+				if (c instanceof TreasureCard) {
+					treasureInHand=true;
+				}
+			}
+			
+			System.out.println("");
+		}
 	}
+
+	/**
+	 * @return the hand
+	 */
+	public CardList getHand() {
+		return hand;
+	}
+
+	/**
+	 * @return the discard
+	 */
+	public CardList getDiscard() {
+		return discard;
+	}
+
+	/**
+	 * @return the draw
+	 */
+	public CardList getDraw() {
+		return draw;
+	}
+
+	/**
+	 * @return the inPlay
+	 */
+	public CardList getInPlay() {
+		return inPlay;
+	}
+	
+	
+	
 }

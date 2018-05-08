@@ -77,4 +77,6 @@ public abstract class Card {
 	public int victoryValue(Player p) {
 		return 0;
 	}
+	
+	
 }
