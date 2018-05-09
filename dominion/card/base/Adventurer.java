@@ -21,7 +21,7 @@ public class Adventurer extends ActionCard {
 					nbCardRevealed++;
 				}
 				else {
-					p.getDiscard().add(c);
+					p.gain(c);
 				}
 			}
 			
