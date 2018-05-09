@@ -21,7 +21,22 @@ public class Bureaucrat extends AttackCard {
 		List<Player> op;
 		op=p.getGame().otherPlayers(p);
 		for (Player loop_p : op){
-			loop_p.
+			int cardShowed=0;
+			CardList hand=loop_p.cardsInHand();
+			for(Card c_loop : hand){
+				if((c_loop instanceof VictoryCard)&&(cardShowed<1)){
+					c_loop.toString();
+					hand.transferTo(c_loop, loop_p.getDraw(), 0);
+					cardShowed++;
+					break;
+				}
+			}
+			if(cardShowed==0){
+				for(Card c_loop : hand){
+					c_loop.toString();
+				}			
+			}
+			
 		}
 		
 	}

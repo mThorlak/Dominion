@@ -101,4 +101,19 @@ public class CardList extends ArrayList<Card> {
 			System.err.println("transferTo(card c,CardList cl) : carte non-présente");
 		}
 	}
+	
+	/**
+	 * Transfére la carte c de cette instance vers la CardList cible
+	 * @param cl Liste de carte cible (où les cartes seront transférés)
+	 * @param index Index de l'emplacement ciblé
+	 */
+	public void transferTo(Card c,CardList cl,int index) {
+		if (this.contains(c)) {
+			this.remove(c);
+			cl.add(index,c);
+		}
+		else {
+			System.err.println("transferTo(card c,CardList cl) : carte non-présente");
+		}
+	}
 }
