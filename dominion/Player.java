@@ -10,68 +10,81 @@ public class Player {
 	 * Nom du joueur
 	 */
 	private String name;
-	
+
 	/**
 	 * Nombre d'actions disponibles
 	 */
 	private int actions;
-	
+
 	/**
 	 * Nombre de pièces disponibles pour acheter des cartes
 	 */
 	private int money;
-	
+
 	/**
 	 * Nombre d'achats disponibles
 	 */
 	private int buys;
-	
+
 	/**
 	 * Référence vers la partie en cours
 	 */
 	private Game game;
-	
+
 	/**
 	 * Liste des cartes dans la main du joueur
 	 */
 	private CardList hand;
-	
+
 	/**
 	 * Liste des cartes dans la défausse du joueur
 	 */
 	private CardList discard;
-	
+
 	/**
 	 * Liste des cartes dans la pioche du joueur
 	 */
 	private CardList draw;
-	
+
 	/**
 	 * Listes des cartes qui ont été jouées pendant le tour courant
 	 */
 	private CardList inPlay;
-	
+
 	/**
 	 * Constructeur
-	 * 
+	 *
 	 * Initialise les différentes piles de cartes du joueur, place 3 cartes
 	 * Estate et 7 cartes Copper dans la défausse du joueur puis fait piocher 5
 	 * cartes en main au joueur.
-	 * 
+	 *
 	 * @param name: le nom du joueur
 	 * @param game: le jeu en cours
-	 * 
-	 * Indications: On peut utiliser la méthode {@code this.endTurn()} pour 
+	 *
+	 * Indications: On peut utiliser la méthode {@code this.endTurn()} pour
 	 * préparer la main du joueur après avoir placé les cartes dans la défausse.
 	 */
 	public Player(String name, Game game) {
 		this.name=name;
 		this.game=game;
-		
+
 		this.hand=new CardList();
 		this.discard=new CardList();
 		this.draw=new CardList();
 		this.inPlay=new CardList();
+
+		//Le joueur reçoit 3 cartes domaines et 7 cartes cuivre dans sa deffausse
+		for(int i=0; i<3; i++)
+			this.discard.add(new estate());
+
+		for(int i=0; i<7; i++)
+			this.discard.add(new copper());
+
+		//Le joueur pioche 5 cartes
+		for (int i=0;i<5 ;i++ )
+			this.hand.add(drawCard());
+			
+
 	}
 
 	/**
@@ -80,26 +93,26 @@ public class Player {
 	public String getName() {
 		return this.name;
 	}
-	
+
 	public int getActions() {
 		return this.actions;
 	}
-	
+
 	public int getMoney() {
 		return this.money;
 	}
-	
+
 	public int getBuys() {
 		return this.buys;
 	}
-	
+
 	public Game getGame() {
 		return this.game;
 	}
-	
+
 	/**
 	 * Incrémente le nombre d'actions du joueur
-	 * 
+	 *
 	 * @param n nombre d'actions à ajouter (ce nombre peut être négatif si l'on
 	 * souhaite diminuer le nombre d'actions)
 	 */
@@ -107,10 +120,10 @@ public class Player {
 		this.actions+=n;
 		if(this.actions<0) this.actions=0;
 	}
-	
+
 	/**
 	 * Incrémente le nombre de pièces du joueur
-	 * 
+	 *
 	 * @param n nombre de pièces à ajouter (ce nombre peut être négatif si l'on
 	 * souhaite diminuer le nombre de pièces)
 	 */
@@ -118,10 +131,10 @@ public class Player {
 		this.money+=n;
 		if(this.money<0) this.money=0;
 	}
-	
+
 	/**
 	 * Incrémente le nombre d'achats disponibles du joueur
-	 * 
+	 *
 	 * @param n nombre d'achats à ajouter (ce nombre peut être négatif si l'on
 	 * souhaite diminuer le nombre d'achats)
 	 */
@@ -132,13 +145,13 @@ public class Player {
 
 	/**
 	 * Renvoie une liste des cartes que le joueur a en main.
-	 * La liste renvoyée doit être une nouvelle {@code CardList} dont les 
+	 * La liste renvoyée doit être une nouvelle {@code CardList} dont les
 	 * éléments sont les mêmes que ceux de {@code this.hand}.
 	 */
 	public CardList cardsInHand() {
 		return this.hand;
 	}
-	
+
 	/**
 	 * Renvoie une liste de toutes les cartes possédées par le joueur
 	 * (le deck complet c'est-à-dire toutes les cartes dans la main, la
@@ -150,13 +163,13 @@ public class Player {
 	total.addAll(this.hand);
 	total.addAll(this.discard);
 	total.addAll(this.inPlay);
-	
+
 	return total;
 	}
-	
+
 	/**
 	 * Renvoie le nombre total de points de victoire du joueur
-	 * 
+	 *
 	 * Ce total est calculé en ajoutant les valeurs individuelles de toutes les
 	 * cartes dans le deck du joueur (en utilisant la méthode
 	 * {@code victoryValue()}) des cartes
@@ -169,31 +182,31 @@ public class Player {
 			}
 		return victPts;
 		}
-		
-	
+
+
 	/**
 	 * Renvoie une liste des autres joueurs de la partie.
-	 * 
+	 *
 	 * Les adversaires sont listés dans l'ordre de jeu, c'est-à-dire que le
 	 * premier de la liste est celui qui joue immédiatement après le joueur,
 	 * puis le suivant, et ainsi de suite jusqu'au joueur qui joue immédiatement
 	 * avant le joueur.
-	 * 
+	 *
 	 * Rmq: Cette méthode fait appel à la méthode {@code otherPlayers(Player p)}
 	 * de la classe {@code Game}.
 	 */
 	public List<Player> otherPlayers() {
 		return this.game.otherPlayers(this);
 	}
-	
+
 	/**
 	 * Pioche une carte dans la pioche du joueur.
-	 * 
+	 *
 	 * Si la pioche du joueur est vide, on commence par mélanger la défausse
 	 * et transférer toutes les cartes de la défausse dans la pioche.
 	 * On retire et renvoie ensuite la première carte de la pioche si elle n'est
 	 * pas vide (sinon la méthode ne fait rien et renvoie {@code null})
-	 * 
+	 *
 	 * @return la carte piochée, {@code null} si aucune carte disponible
 	 */
 	public Card drawCard() {
@@ -210,11 +223,11 @@ public class Player {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Renvoie une représentation de l'état du joueur sous forme d'une chaîne
 	 * de caractères.
-	 * 
+	 *
 	 * Cette représentation comporte
 	 * - le nom du joueur
 	 * - le nombre d'actions, de pièces et d'achats du joueur
@@ -224,14 +237,14 @@ public class Player {
 	 */
 	public String toString() {
 		String r = String.format("     -- %s --\n", this.name);
-		r += String.format("Actions: %d     Money: %d     Buys: %d     Draw: %d     Discard: %d\n", this.actions, this.money, this.buys, this.draw.size(), this.discard.size()); 
+		r += String.format("Actions: %d     Money: %d     Buys: %d     Draw: %d     Discard: %d\n", this.actions, this.money, this.buys, this.draw.size(), this.discard.size());
 		r += String.format("In play: %s\n", this.inPlay.toString());
 		r += String.format("Hand: %s\n", this.hand.toString());
 		return r;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Renvoie la liste de toutes les cartes Trésor dans la main du joueur
 	 */
@@ -240,11 +253,11 @@ public class Player {
 		for(Card c : this.hand) {
 			if (c instanceof TreasureCard) {
 				treasureCardList.add(c);
-			}			
+			}
 		}
 		return treasureCardList;
 	}
-	
+
 	/**
 	 * Renvoie la liste de toutes les cartes Action dans la main du joueur
 	 */
@@ -253,11 +266,11 @@ public class Player {
 		for(Card c : this.hand) {
 			if (c instanceof ActionCard) {
 				actionCardList.add(c);
-			}			
+			}
 		}
 		return actionCardList;
 	}
-	
+
 	/**
 	 * Renvoie la liste de toutes les cartes Victoire dans la main du joueur
 	 */
@@ -266,16 +279,16 @@ public class Player {
 		for(Card c : this.hand) {
 			if (c instanceof VictoryCard) {
 				victoryCardList.add(c);
-			}			
+			}
 		}
 		return victoryCardList;
 	}
-	
+
 	/**
 	 * Joue une carte de la main du joueur.
-	 * 
+	 *
 	 * @param c carte à jouer
-	 * 
+	 *
 	 * Cette méthode ne vérifie pas que le joueur a le droit de jouer la carte,
 	 * ni même que la carte se trouve effectivement dans sa main.
 	 * La méthode retire la carte de la main du joueur, la place dans la liste
@@ -285,14 +298,14 @@ public class Player {
 		this.hand.remove(c);
 		c.play(this);
 	}
-	
+
 	/**
 	 * Joue une carte de la main du joueur.
-	 * 
+	 *
 	 * @param cardName nom de la carte à jouer
-	 * 
+	 *
 	 * S'il existe une carte dans la main du joueur dont le nom est égal au
-	 * paramètre, la carte est jouée à l'aide de la méthode 
+	 * paramètre, la carte est jouée à l'aide de la méthode
 	 * {@code playCard(Card c)}. Si aucune carte ne correspond, la méthode ne
 	 * fait rien.
 	 */
@@ -302,14 +315,14 @@ public class Player {
 			this.playCard(c);
 		}
 	}
-	
+
 	/**
 	 * Le joueur gagne une carte.
-	 * 
+	 *
 	 * @param c carte à gagner (éventuellement {@code null})
-	 * 
+	 *
 	 * Si la carte n'est pas {@code null}, elle est placée sur la défausse du
-	 * joueur. On suppose que la carte a correctement été retirée de son 
+	 * joueur. On suppose que la carte a correctement été retirée de son
 	 * emplacement précédent au préalable.
 	 */
 	public void gain(Card c) {
@@ -317,18 +330,18 @@ public class Player {
 			this.discard.add(c);
 		}
 	}
-	
+
 	/**
 	 * Le joueur gagne une carte de la réserve
-	 * 
-	 * @param cardName nom de la carte à gagner. S'il existe une carte dans la 
-	 * réserve ayant ce nom, cette carte est retirée de la réserve et placée 
+	 *
+	 * @param cardName nom de la carte à gagner. S'il existe une carte dans la
+	 * réserve ayant ce nom, cette carte est retirée de la réserve et placée
 	 * sur la défausse du joueur.
-	 * @return la carte qui a été ajoutée à la défausse du joueur, ou {@code 
+	 * @return la carte qui a été ajoutée à la défausse du joueur, ou {@code
 	 * null} si aucune carte n'a été prise dans la réserve.
 	 */
 	public Card gain(String cardName) {
-		
+
 		if (this.game.getFromSupply(cardName)!=null) {
 			Card c=this.game.removeFromSupply(cardName);
 			this.gain(c);
@@ -338,19 +351,19 @@ public class Player {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Le joueur achète une carte de la réserve
-	 * 
+	 *
 	 * La méthode cherche une carte dans la réserve dont le nom est égal au
-	 * paramètre, puis vérifie que le joueur a assez de pièces pour l'acheter 
+	 * paramètre, puis vérifie que le joueur a assez de pièces pour l'acheter
 	 * et au moins un achat disponible.
 	 * Si le joueur peut acheter la carte, le coût de la carte est soustrait à
-	 * l'argent du joueur, le nombre d'achats disponibles est décrémenté de 1 
+	 * l'argent du joueur, le nombre d'achats disponibles est décrémenté de 1
 	 * et la carte est gagnée par le joueur.
-	 * 
+	 *
 	 * @param cardName nom de la carte à acheter
-	 * @return la carte qui a été gagnée ou {@code null} si l'achat n'a pas eu 
+	 * @return la carte qui a été gagnée ou {@code null} si l'achat n'a pas eu
 	 * lieu
 	 */
 	public Card buyCard(String cardName) {
@@ -359,41 +372,41 @@ public class Player {
 			if(this.money>=c.getCost()&&this.buys>=1) {
 				this.incrementMoney(-c.getCost());
 				this.incrementBuys(-1);
-				return this.gain(cardName);				
+				return this.gain(cardName);
 			}
 		}
 		return null;
-		
+
 	}
-	
+
 	/**
 	 * Attend une entrée de la part du joueur (au clavier) et renvoie le choix
 	 *  du joueur.
-	 * 
+	 *
 	 * @param instruction message à afficher à l'écran pour indiquer au joueur
 	 * la nature du choix qui est attendu
 	 * @param choices une liste de chaînes de caractères correspondant aux
-	 * choix valides attendus du joueur (la liste sera convertie en ensemble 
-	 * par la fonction pour éliminer les doublons, ce qui permet de compter 
+	 * choix valides attendus du joueur (la liste sera convertie en ensemble
+	 * par la fonction pour éliminer les doublons, ce qui permet de compter
 	 * correctement le nombre d'options disponibles)
 	 * @param canPass booléen indiquant si le joueur a le droit de passer sans
 	 * faire de choix. S'il est autorisé à passer, c'est la chaîne de
 	 * caractères vide ("") qui signifie qu'il désire passer.
-	 * 
+	 *
 	 * @return la méthode lit l'entrée clavier jusqu'à ce qu'un choix valide
 	 * soit entré par l'utilisateur (un élément de {@code choices} ou
 	 * éventuellement la chaîne vide si l'utilisateur est autorisé à passer).
 	 * Lorsqu'un choix valide est obtenu, il est renvoyé.
-	 * 
+	 *
 	 * Si l'ensemble {@code choices} ne comporte qu'un seul élément et que
 	 * {@code canPass} est faux, l'unique choix valide est automatiquement
 	 * renvoyé sans lire l'entrée de l'utilisateur.
-	 * 
-	 * Si l'ensemble des choix est vide, la chaîne vide ("") est 
-	 * automatiquement renvoyée par la méthode (indépendamment de la valeur de 
+	 *
+	 * Si l'ensemble des choix est vide, la chaîne vide ("") est
+	 * automatiquement renvoyée par la méthode (indépendamment de la valeur de
 	 * {@code canPass}).
-	 * 
-	 * Exemple d'utilisation pour demander à un joueur de répondre à une 
+	 *
+	 * Exemple d'utilisation pour demander à un joueur de répondre à une
 	 * question :
 	 * <pre>
 	 * {@code
@@ -438,12 +451,12 @@ public class Player {
 			}
 		}
 	}
-	
+
 	/**
 	 * Attend une entrée de la part du joueur et renvoie le choix du joueur.
-	 * Dans cette méthode, la liste des choix est donnée sous la forme d'une 
+	 * Dans cette méthode, la liste des choix est donnée sous la forme d'une
 	 * liste de cartes et le joueur doit choisir le nom d'une de ces cartes.
-	 * 
+	 *
 	 * @param instruction message à afficher à l'écran pour indiquer au joueur
 	 * la nature du choix qui est attendu
 	 * @param choices liste de cartes parmi lesquelles il faut en choisir une
@@ -451,14 +464,14 @@ public class Player {
 	 * @param canPass booléen indiquant si le joueur a le droit de passer sans
 	 * faire de choix. S'il est autorisé à passer, c'est la chaîne de
 	 * caractères vide ("") qui signifie qu'il désire passer.
-	 * 
-	 * La méthode commence par construire une liste de tous les noms des cartes 
-	 * dans {@code choices} puis appelle la méthode précédente pour faire 
+	 *
+	 * La méthode commence par construire une liste de tous les noms des cartes
+	 * dans {@code choices} puis appelle la méthode précédente pour faire
 	 * choisir un nom parmi cette liste à l'utilisateur.
-	 * 
+	 *
 	 * Exemple d'utilisation pour faire choisir le nom d'une carte Action de sa
-	 * main à un joueur (dans cet exemple le joueur n'a pas le droit de passer 
-	 * s'il a au moins une carte Action en main, mais la méthode peut quand 
+	 * main à un joueur (dans cet exemple le joueur n'a pas le droit de passer
+	 * s'il a au moins une carte Action en main, mais la méthode peut quand
 	 * même renvoyer {@code ""} s'il n'a aucune carte Action en main) :
 	 * <pre>
 	 * {@code
@@ -481,20 +494,20 @@ public class Player {
 		// appel de la méthode précédente en passant l'ensemble de noms
 		return this.choose(instruction, stringChoices, canPass);
 	}
-	
+
 	/**
 	 * Démarre le tour du joueur
-	 * 
+	 *
 	 * Les compteurs d'actions et achats sont mis à 1
 	 */
 	public void startTurn() {
 		this.incrementActions(1);
 		this.incrementBuys(1);
 	}
-	
+
 	/**
 	 * Termine le tour du joueur
-	 * 
+	 *
 	 * - Les compteurs d'actions, argent et achats du joueur sont remis à 0
 	 * - Les cartes en main et en jeu sont défaussées
 	 * - Le joueur pioche 5 cartes en main
@@ -502,65 +515,65 @@ public class Player {
 	public void endTurn() {
 		this.buys=0;
 		this.actions=0;
-		
+
 		this.hand.transferTo(this.discard);
 		this.inPlay.transferTo(this.discard);
 		while(this.hand.size()<5) {
 			this.drawCard();
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Exécute le tour d'un joueur
-	 * 
+	 *
 	 * Cette méthode exécute successivement les 5 phases du tour d'un joueur:
-	 * 
+	 *
 	 * 1. (Préparation) la méthode {@code startTurn()} est appelée
-	 * 
-	 * 2. (Action) Tant que le joueur a des actions disponibles, on lui demande 
+	 *
+	 * 2. (Action) Tant que le joueur a des actions disponibles, on lui demande
 	 * de choisir le nom d'une carte Action de sa main à jouer. Il peut passer à
-	 * tout moment à la phase suivante (soit de manière forcée s'il n'a plus de 
-	 * carte Action en main soit volontairement en entrant la chaîne vide). 
-	 * Lorsqu'il joue une carte Action, la fonction décrémente son nombre 
+	 * tout moment à la phase suivante (soit de manière forcée s'il n'a plus de
+	 * carte Action en main soit volontairement en entrant la chaîne vide).
+	 * Lorsqu'il joue une carte Action, la fonction décrémente son nombre
 	 * d'actions puis joue la carte.
-	 * 
-	 * 3. (Trésor) Le joueur joue toutes les cartes Trésor de sa main 
-	 * automatiquement (dans le jeu de base il n'y a aucune raison de ne pas 
+	 *
+	 * 3. (Trésor) Le joueur joue toutes les cartes Trésor de sa main
+	 * automatiquement (dans le jeu de base il n'y a aucune raison de ne pas
 	 * jouer tous les trésors automatiquement).
-	 * 
-	 * 4. (Achat) Tant que le joueur a au moins un achat disponible, on lui 
-	 * demande de choisir le nom d'une carte de la réserve qu'il veut acheter. 
-	 * Il ne peut acheter que des cartes dont le prix est inférieur à l'argent 
-	 * dont il dispose. Le joueur peut passer (et terminer son tour) à tout 
+	 *
+	 * 4. (Achat) Tant que le joueur a au moins un achat disponible, on lui
+	 * demande de choisir le nom d'une carte de la réserve qu'il veut acheter.
+	 * Il ne peut acheter que des cartes dont le prix est inférieur à l'argent
+	 * dont il dispose. Le joueur peut passer (et terminer son tour) à tout
 	 * moment pendant cette phase.
-	 * 
-	 * 5. (Fin) La méthode {@code endTurn()} est appelée pour terminer le tour 
+	 *
+	 * 5. (Fin) La méthode {@code endTurn()} est appelée pour terminer le tour
 	 * du joueur
 	 */
 	public void playTurn() {
 		this.startTurn();
-		
+
 		while(this.actions>0) {
-			
+
 		}
 		boolean treasureInHand=true;
-		
+
 		for(Card c : this.cardsInHand()) {
 			if (c instanceof ActionCard) {
 				treasureInHand=true;
 			}
 		}
-		
-		while(treasureInHand) {			
+
+		while(treasureInHand) {
 			treasureInHand=false;
 			for(Card c : this.cardsInHand()) {
 				if (c instanceof TreasureCard) {
 					treasureInHand=true;
 				}
 			}
-			
+
 			System.out.println("");
 		}
 	}
@@ -592,7 +605,7 @@ public class Player {
 	public CardList getInPlay() {
 		return inPlay;
 	}
-	
-	
-	
+
+
+
 }
