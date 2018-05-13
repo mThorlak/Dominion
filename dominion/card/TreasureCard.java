@@ -10,8 +10,8 @@ public abstract class TreasureCard extends Card {
 	public CardType type;
 	public List<CardList> Treasure_list;
 
-	public TreasureCard(String cardName,int value){
-		super(cardName,value);
+	public TreasureCard(String cardName,int cost){
+		super(cardName,cost);
 		this.type = CardType.Treasure;
 
   }
